@@ -1,0 +1,22 @@
+# .gitignore
+*.zip
+*.h5
+*.pkl
+*.ckpt
+*.pt
+/media/
+/dataset */
+/static/uploads/
+/__pycache__/
+*.sqlite3
+
+dataset/
+media/
+*.zip
+*.h5
+*.sqlite3
+*.pkl
+*.pt
+*.ckpt
+__pycache__/
+static/uploads/
