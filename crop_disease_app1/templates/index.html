@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crop Disease Detector</title>
+</head>
+<body>
+    <h1>Upload Leaf Image</h1>
+    <form method="POST" enctype="multipart/form-data" action="/predict/">
+        {% csrf_token %}
+        <input type="file" name="image" required><br><br>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if disease %}
+        <h2>Prediction: {{ disease }}</h2>
+        <img src="{{ image_path }}" width="300"><br><br>
+        <p><strong>Crop:</strong> {{ crop }}</p>
+        <p><strong>Description:</strong> {{ description }}</p>
+        <p><strong>Symptoms:</strong> {{ symptoms }}</p>
+        <p><strong>Cause:</strong> {{ cause }}</p>
+        <p><strong>Solution:</strong> {{ solution }}</p>
+        <p><strong>Prevention:</strong> {{ prevention }}</p>
+        <p><strong>Danger Level:</strong> <b style="color:red">{{ danger_level }}</b></p>
+    {% endif %}
+</body>
+</html>
