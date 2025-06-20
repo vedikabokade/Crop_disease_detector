@@ -3,7 +3,60 @@
 <head>
     <title>Crop Disease Detector</title>
 </head>
+{% load static %}
+<style>
+    .top-band {
+      background-color: #84e84e; /* Bootstrap-like green */
+      color: black;
+      height: 150px;
+      text-align: center;
+      
+      font-family: Arial, sans-serif;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+box-sizing: border-box;
+    }
+     .logo {
+      display: flex;
+      padding-left: 0%;
+    }
+
+    .logo img {
+      height: 150px;
+      margin-right: 150px;
+    }
+
+    .title {
+      flex: 1;
+      text-align: center;
+      font-size: 3rem;
+      font-family:'Lora', serif;
+      position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+      
+      
+
+    }
+    body {
+    margin: 0;
+    padding-top: 150px; /* space for fixed top bar */
+  }
+</style>
 <body>
+
+    <div class="top-band">
+        <div class="logo">
+            <img src="{% static 'logo.png' %}" alt="Logo">
+        </div>
+    <div class="title">🌿 CROP DISEASE DETECTOR </div>
+    </div>
+    <div>
     <h1>Upload Leaf Image</h1>
     <form method="POST" enctype="multipart/form-data" action="/predict/">
         {% csrf_token %}
@@ -22,5 +75,6 @@
         <p><strong>Prevention:</strong> {{ prevention }}</p>
         <p><strong>Danger Level:</strong> <b style="color:red">{{ danger_level }}</b></p>
     {% endif %}
+    </div>
 </body>
 </html>

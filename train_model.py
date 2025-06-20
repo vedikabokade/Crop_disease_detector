@@ -3,7 +3,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout ,BatchNormalization
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint ,ReduceLROnPlateau
-
 from tensorflow.keras import Input
 from tensorflow.keras.optimizers import Adam
 
@@ -44,25 +43,35 @@ val = datagen.flow_from_directory(
     seed=42
 )
 
+
 model = Sequential([
     Input(shape=(img_height, img_width, 3)),
     Conv2D(32, (3, 3), activation='relu'),
     BatchNormalization(),
+    Conv2D(32, (3, 3), activation='relu', padding='same'),
     MaxPooling2D(2, 2),
-    Dropout(0.2),
+    Dropout(0.1),
 
     Conv2D(64, (3, 3), activation='relu'),
     BatchNormalization(),
+    Conv2D(64, (3, 3), activation='relu', padding='same'),
     MaxPooling2D(2, 2),
-    Dropout(0.3),
+    Dropout(0.2),
 
     Conv2D(128, (3, 3), activation='relu'),
     BatchNormalization(),
+    Conv2D(128, (3, 3), activation='relu', padding='same'),
+    MaxPooling2D(2, 2),
+    Dropout(0.3),
+
+    Conv2D(256, (3, 3), activation='relu'),
+    BatchNormalization(),
+    Conv2D(256, (3, 3), activation='relu', padding='same'),
     MaxPooling2D(2, 2),
     Dropout(0.4),
 
     Flatten(),
-    Dense(128, activation='relu'),
+    Dense(256, activation='relu'),
     Dropout(0.5),
     Dense(train.num_classes, activation='softmax')
 ])
@@ -75,7 +84,7 @@ early_stop = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=
 reduce_lr = ReduceLROnPlateau(
     monitor='val_loss',
     factor=0.5,           # reduce learning rate by 50%
-    patience=2,           # after 2 epochs of no improvement
+    patience=5,           # after 2 epochs of no improvement
     verbose=1,
     min_lr=1e-6           # minimum learning rate
 )
@@ -87,6 +96,7 @@ model.fit(
     validation_data=val,
     epochs=30,
     callbacks=[early_stop, reduce_lr,checkpoint],
+
 )
 
 model.save("model/plant_disease_model.keras")
