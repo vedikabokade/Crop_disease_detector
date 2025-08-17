@@ -10,7 +10,7 @@
       color: black;
       height: 150px;
       text-align: center;
-      
+      padding-left: 0%;
       font-family: Arial, sans-serif;
       position: fixed;
       top: 0;
@@ -39,14 +39,85 @@ box-sizing: border-box;
       position: absolute;
     left: 50%;
     transform: translateX(-50%);
-      
-      
+    }
+
+    .marquee-container{
+    padding-top: 140px;
+    width: 100%;
+    overflow: hidden;
+      background-color: #e0fad7;
+      border-top: 2px solid #84e84e;
+      border-bottom: 2px solid #84e84e;
+      position: fixed;
+    }
+    .marquee-text{
+    display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: marquee 15s linear infinite;
+      font-size: 1.5rem;
+      color: #070606;
 
     }
-    body {
-    margin: 0;
-    padding-top: 150px; /* space for fixed top bar */
-  }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .toc {
+      position: fixed;
+      left: 0;
+      padding-top: 150px;
+      width: 200px;
+      height: 100vh;
+      background-color: #e0fad7; /* Green background */
+      color: rgb(5, 5, 5);
+      border-right: 2px solid #84e84e;
+    }
+
+    .mainbody{
+      padding-left: 220px;
+      padding-top: 180px;
+    }
+    .container {
+    padding-top: 80px;
+    display: flex;
+    gap: 130px;
+    padding: 20px;
+    overflow-x: auto; 
+    }
+
+    .section1 {
+      width: 200px;
+      height: 150px;
+      flex: 0 0 auto;
+    }
+    .section2 {
+      font-size: 18px;
+
+    }
+    .how-to-use {
+      font-size: 18px;
+    }
+    .upload-area {
+      font-size: 18px;
+    }
+    .prediction {
+      font-size: 18px;
+    }
+    .flow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.arrow {
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 20px solid rgb(6, 95, 3); /* arrow color */
+}
+
 </style>
 <body>
 
@@ -56,17 +127,68 @@ box-sizing: border-box;
         </div>
     <div class="title">🌿 CROP DISEASE DETECTOR </div>
     </div>
-    <div>
-    <h1>Upload Leaf Image</h1>
+
+<div class="marquee-container">
+    <div class="marquee-text">
+      🌿 "Know your crop’s health today – Fast, free, and farmer-friendly!" 🌿
+    </div>
+  </div>
+
+ <div class="toc">
+    <h3 style="color: black;" style="font-size: large;" >Contents</h3>
+    <ul>
+      <li style="margin-bottom: 15px;"><a href="#instructions">How to Use</a></li>
+      <li style="margin-bottom: 15px;"><a href="#upload">Upload</a></li>
+      <li style="margin-bottom: 15px;"><a href="#result">Result</a></li>
+      
+      
+    </ul>
+  </div>
+    
+  <div class="mainbody">
+    <div class="how-to-use">
+        <h2 id="instructions">How to Use :</h2>
+        <ol>
+          <li style="margin-bottom: 10px;">Take a clear photo of the leaf.</li>
+          <li style="margin-bottom: 10px;">Upload it using the left panel.</li>
+          <li style="margin-bottom: 10px;">Click "Predict" to see the result in the center panel.</li>
+          <li>Follow the treatment suggestions.</li>
+        </ol>
+        <h2 id="instructions">Image Guide :</h2>
+        <div class="flow">
+        <img src="{% static 'how to.jpg' %}" alt="Logo" width="200" height="150">
+        <div class="arrow"></div>
+        <img src="{% static 'uploadbutton.png' %}" alt="Logo">
+        <div class="arrow"></div>
+        <img src="{% static 'predict.png' %}" alt="Logo">
+        </div>
+    </div>
+
+    
+
+      
+      <div class="upload-area">
+    <h2 id="upload">Upload Leaf Image</h2>
     <form method="POST" enctype="multipart/form-data" action="/predict/">
         {% csrf_token %}
         <input type="file" name="image" required><br><br>
         <button type="submit">Predict</button>
     </form>
-
+      </div>
+    <div class=" prediction">
     {% if disease %}
-        <h2>Prediction: {{ disease }}</h2>
-        <img src="{{ image_path }}" width="300"><br><br>
+      <h2 id="result">Prediction: {{ disease }}</h2>
+    {% if image_path %}
+      </div>
+        <div class="container">
+      <div class="section1">
+    <img src="{{ image_path }}" width="300" alt="Uploaded Leaf">
+{% endif %}
+        <!-- <img src="{{ image_path }}" width="300"><br><br> -->
+      </div>
+
+      <div class="section2">
+
         <p><strong>Crop:</strong> {{ crop }}</p>
         <p><strong>Description:</strong> {{ description }}</p>
         <p><strong>Symptoms:</strong> {{ symptoms }}</p>
@@ -74,7 +196,14 @@ box-sizing: border-box;
         <p><strong>Solution:</strong> {{ solution }}</p>
         <p><strong>Prevention:</strong> {{ prevention }}</p>
         <p><strong>Danger Level:</strong> <b style="color:red">{{ danger_level }}</b></p>
+      </div>
     {% endif %}
+
+      </div>
+      </div>
+
+    </div>
+
     </div>
 </body>
 </html>
