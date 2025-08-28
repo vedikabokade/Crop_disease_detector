@@ -27,14 +27,23 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+import os
+from pathlib import Path
 
-# import os
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-3%6463begl7ptxc8@+*jc7804yipnxm#*jkd9ub4sb5*1pdk%&")
+# ✅ Use Render environment variable for SECRET_KEY
+#    Falls back to your original Django key locally
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-3%6463begl7ptxc8@+*jc7804yipnxm#*jkd9ub4sb5*1pdk%&'  # your original Django key here
+)
 
-# DEBUG = os.environ.get("DEBUG", "True") == "True"
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+# ✅ Render provides the domain for your app, e.g. "your-app.onrender.com"
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1').split()
+
 
 
 # Application definition
