@@ -9,7 +9,17 @@ from django.shortcuts import render
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 
-model = load_model(os.path.join(settings.BASE_DIR, 'model/plant_disease_model.keras'))
+# model = load_model(os.path.join(settings.BASE_DIR,"model","plant_disease_model.h5"))
+
+# Lazy-load model
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = load_model(os.path.join(settings.BASE_DIR, "model", "plant_disease_model.h5"))
+    return _model
+
 disease_df = pd.read_csv(os.path.join(settings.BASE_DIR, 'disease_info.csv'))
 
 class_names = sorted(disease_df['label'].unique())
@@ -45,21 +55,31 @@ def index(request):
 def predict(request):
     if request.method == 'POST' and 'image' in request.FILES:
         img = request.FILES['image']
-        img_path = os.path.join(settings.MEDIA_ROOT, img.name)
+        
+        upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+        os.makedirs(upload_dir, exist_ok=True)  # Make sure the folder exists
+
+        img_path = os.path.join(upload_dir, img.name)
+    
         with open(img_path, 'wb+') as f:
             for chunk in img.chunks():
+                
                 f.write(chunk)
 
         img_obj = image.load_img(img_path, target_size=(128, 128))
         img_array = image.img_to_array(img_obj) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-
+        
+        model = get_model()
         prediction = model.predict(img_array)
         predicted_label = class_names[np.argmax(prediction)]
         disease_details = get_disease_info(predicted_label)
 
+
+
+
         return render(request, 'index.html', {
-            'image_path': 'static/uploads/' + img.name,
+            'image_path': settings.MEDIA_URL +'uploads/' + img.name,
             **disease_details
         })
     return render(request, 'index.html')
