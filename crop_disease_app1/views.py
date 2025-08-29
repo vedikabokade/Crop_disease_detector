@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 # Create your views here.
+import matplotlib
+matplotlib.use("Agg")
 import os
 import numpy as np
 import pandas as pd
