@@ -20,9 +20,21 @@ def get_model():
         _model = load_model(os.path.join(settings.BASE_DIR, "model", "plant_disease_model.h5"))
     return _model
 
-disease_df = pd.read_csv(os.path.join(settings.BASE_DIR, 'disease_info.csv'))
+# disease_df = pd.read_csv(os.path.join(settings.BASE_DIR, 'disease_info.csv'))
 
-class_names = sorted(disease_df['label'].unique())
+# class_names = sorted(disease_df['label'].unique())
+disease_df = None
+class_names = None
+def get_disease_data():
+    global disease_df, class_names
+    if disease_df is None:
+        csv_path = os.path.join(settings.BASE_DIR, 'disease_info.csv')
+        disease_df = pd.read_csv(csv_path)
+        class_names = sorted(disease_df['label'].unique())
+    return disease_df, class_names
+
+
+
 
 def get_disease_info(label):
     row = disease_df[disease_df['label'] == label]
@@ -52,34 +64,33 @@ def get_disease_info(label):
 def index(request):
     return render(request, 'index.html')
 
+
 def predict(request):
     if request.method == 'POST' and 'image' in request.FILES:
         img = request.FILES['image']
-        
+
         upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
-        os.makedirs(upload_dir, exist_ok=True)  # Make sure the folder exists
+        os.makedirs(upload_dir, exist_ok=True)
 
         img_path = os.path.join(upload_dir, img.name)
-    
         with open(img_path, 'wb+') as f:
             for chunk in img.chunks():
-                
                 f.write(chunk)
 
         img_obj = image.load_img(img_path, target_size=(128, 128))
         img_array = image.img_to_array(img_obj) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-        
+
         model = get_model()
+        disease_df, class_names = get_disease_data()
+
         prediction = model.predict(img_array)
         predicted_label = class_names[np.argmax(prediction)]
-        disease_details = get_disease_info(predicted_label)
-
-
-
+        disease_details = get_disease_info(predicted_label, disease_df)
 
         return render(request, 'index.html', {
             'image_path': settings.MEDIA_URL +'uploads/' + img.name,
             **disease_details
         })
     return render(request, 'index.html')
+
