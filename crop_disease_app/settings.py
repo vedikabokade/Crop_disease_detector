@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+
+import matplotlib
+matplotlib.use("Agg")
+
+
 import os
 from pathlib import Path
 
@@ -43,7 +48,6 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ✅ Render provides the domain for your app, e.g. "your-app.onrender.com"
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1').split()
-
 
 
 # Application definition
