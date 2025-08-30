@@ -147,7 +147,7 @@ STATICFILES_DIRS = [ BASE_DIR / "static" ]  # if you have a central static folde
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+DEBUG = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

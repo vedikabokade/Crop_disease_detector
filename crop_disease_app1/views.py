@@ -1,8 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-import matplotlib
-matplotlib.use("Agg")
+
 import os
 import numpy as np
 import pandas as pd
@@ -34,8 +33,6 @@ def get_disease_data():
         disease_df = pd.read_csv(csv_path)
         class_names = sorted(disease_df['label'].unique())
     return disease_df, class_names
-
-
 
 
 def get_disease_info(label):
@@ -88,7 +85,7 @@ def predict(request):
 
         prediction = model.predict(img_array)
         predicted_label = class_names[np.argmax(prediction)]
-        disease_details = get_disease_info(predicted_label, disease_df)
+        disease_details = get_disease_info(predicted_label)
 
         return render(request, 'index.html', {
             'image_path': settings.MEDIA_URL +'uploads/' + img.name,
